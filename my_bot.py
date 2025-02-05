@@ -94,19 +94,25 @@ def respond(user_message, user_name):
     state = "waiting for number"
     return "how much would you like to put into the pot"
   elif state == "waiting for number":
+    chips = user_message
     balance = balance - int(chips)
     number = random.randint(1,10)
     secondnumber = random.randint(1,10)
+    state = "first hand"
     firsthand = number+secondnumber
     return f"Your hand is {firsthand}"
+  elif state == "first hand":
+    print("hi")
   elif "dirt" in user_message:
     return"dirt ~ black soil that can be worth more than you think. Type excavate to find a suprise hidden within the dirt."
   elif "excavate" in user_message:
     balance = balance - 10000
     return f"LAVA! You have hit lava. You have lost 100000 dollars (100 diamonds)! Your balance is now {balance}"
   elif "chocolate latte" in user_message:
+    balance = balance - 500
     return f"I don't like chocolate...minus 500 dollars. Your balance is now {balance}"
   elif "balance" in user_message:
     return f"Your balance is currently {balance}."
   elif "vanilla latte" in user_message:
-    return f"I love vanilla! Plus 250 dollars"
+    balance = balance + 250
+    return f"I love vanilla! Plus 250 dollars. Your balance is now {balance}"

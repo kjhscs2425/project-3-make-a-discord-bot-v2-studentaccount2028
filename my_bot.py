@@ -2,6 +2,7 @@ import random
 balance = 0
 hand = 0
 state = "default"
+firsthand = 0
 
 """
 **Do NOT change the name of this function.**
@@ -14,6 +15,8 @@ This function will be called every time anyone says anything on a channel where 
 """
 def should_i_respond(user_message, user_name):
   global state
+  global firsthand
+  print(state)
   if "hi" in user_message:
     return True
   if "easter" in user_message:
@@ -34,6 +37,14 @@ def should_i_respond(user_message, user_name):
     return True
   elif "b" in user_message:
     return True
+  elif state == "waiting for number":
+    print('responding to waiting for number')
+    return True
+  elif state == "first hand":
+    print('responding to first hand')
+    return True
+  elif state == "second hand":
+    return True
   else:
     return False
 
@@ -47,7 +58,9 @@ This function will be called every time the `should_i_respond` function returns 
 * You can have the bot respond differently to different messages and users
 """
 def respond(user_message, user_name):
+  global firsthand
   global balance
+  global state
   if "easter" in user_message:
     return f"""hmmmm. It seams you have found a golden easter egg! Have a good day ~ the easter egg is worth noting haha."""
   elif "dirt" in user_message:
@@ -94,15 +107,40 @@ def respond(user_message, user_name):
     state = "waiting for number"
     return "how much would you like to put into the pot"
   elif state == "waiting for number":
+    print("hi")
     chips = user_message
     balance = balance - int(chips)
     number = random.randint(1,10)
     secondnumber = random.randint(1,10)
+    print(f"{number=}")
+    print(f"{secondnumber=}")
     state = "first hand"
     firsthand = number+secondnumber
-    return f"Your hand is {firsthand}"
+    return f"Your hand is {firsthand} - push z to continue or lose all chips."
   elif state == "first hand":
-    print("hi")
+    state = "second hand"
+    return("It is now your choice, would you like to hit or stay. Press q for hit and s for stay")
+  elif state == "second hand":
+    if user_message == "q":
+      thridnumber = random.randint(1,10)
+      secondhand = firsthand+thridnumber
+      print(thridnumber)
+      if secondhand > 21:
+        state = "bust"
+        return (f"Bust you have lost! Your losing hand was {secondhand}")
+      if secondhand == 21:
+        state = "playerwin"
+        return ("You have won! You have hit 21!")
+      if secondhand < 21:
+        state = "second hand"
+        return (f"Lucky Ducky! Your final hand is {secondhand}. The dealer will now play.")
+      if user_message == "s":
+       state = "dealer play"
+       return("The dealer will now play.")
+     
+      
+
+
   elif "dirt" in user_message:
     return"dirt ~ black soil that can be worth more than you think. Type excavate to find a suprise hidden within the dirt."
   elif "excavate" in user_message:
